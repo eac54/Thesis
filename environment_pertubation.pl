@@ -6,11 +6,11 @@ use strict;
 
 my %interact=();
 my %phospho=();
-
+# Read in the interactome and phosphorylation data files
 my $int=shift;
 my $phos=shift;
 
-
+# Interactome file must be in format "xxx interacts xxx"
 open (I,$int);
 while (<I>){
   if (/(\S+)\s+interacts\s+(\S+)/){
@@ -46,8 +46,10 @@ foreach my $p1 (keys %interact){
 
   foreach my $p2 (keys %{$interact{$p1}}){
     $newval=$newval+abs($phospho{$p2});
+    #Prints out valyes of local perturbation score as each interactor is added
     print STDERR "$p2=$phospho{$p2} ->$newval  ";
   }
+      #Prints out the final local environment perturbation for each protein in phospho file
       print STDERR "FINAL $p1=$newval\t\t\ $p1\t$newval\n";
 
 }
