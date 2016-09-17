@@ -2,17 +2,20 @@ library(CellNOptR)
 dir.create("CNOR_analysis_cell_line_1")
 
 #Load in MIDAS data and prior knowledge network
-cnolist1=CNOlist("MD_Udai_line1.csv")
-pknmodel<-readSIF("29112012Udai.sif")
-
+cnolist1=CNOlist("MD_example_1.csv")
+pknmodel<-readSIF("PKN.sif")
 data(cnolist1, package="CellNOptR")
 data(pknmodel, package="CellNOptR")
 
+#Plot data from "MD_example_1.csv" and save as a pdf
 plotCNOlist(cnolist1)
 plotCNOlistPDF(CNOlist=cnolist1, filename="ModelGraphCellLine1.pdf")
 
+#Preprocessing of the data - CNOR removes non observable and non controllable species, compresses the model and expands logic gates
 NCNOcutCompExp2 = preprocessing(cnolist1, pknmodel, verbose=FALSE)
+#create an initial bit string for the optimisation, which in this case is just a string of 1s as we have no prior expectation about the model topology
 initBstring2<-rep(1,length(NCNOcutCompExp2$reacID))
+#Run the genetic algorithm for model optimisation for time point 1
 T1opt2<-gaBinaryT1(CNOlist=cnolist1, model=NCNOcutCompExp2, initBstring=initBstring2, stallGenMax=10, maxTime=60, verbose=FALSE)
 
 cutAndPlot( model=NCNOcutCompExp2, bStrings=list(T1opt2$bString), CNOlist=cnolist1, plotPDF=TRUE)
