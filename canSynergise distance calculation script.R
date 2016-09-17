@@ -22,7 +22,7 @@ combos$distance<-0
 for (i in 1:nrow(combos)){
   target1<-combos[i,1]
   target2<-combos[i,2]
-  distance<-a[target1, target2]
+  distance <- a1[rownames(a1) == target1, colnames(a1) == target2]
   combos[i,3]<-distance
 }
 
