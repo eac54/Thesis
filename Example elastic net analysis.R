@@ -1,18 +1,23 @@
 library(glmnet)
+#Read in file of features from Sanger study
 mut<-read.csv("en_input_w5.csv")
+# Read in SOCRATES list of GI50s/percentage growth inhibition
 sensa<-read.csv("Everolimus.csv")
+#Merge these two files together
 names(mut)[names(mut)=="X"]<-"sample_name"
 new<-merge(mut,sensa, by="sample_name")
 
 x<-as.matrix(new[,2:13886])
 y<-as.vector(new[,13887], mode="numeric")
 
+#Perform elastic net analysis 100 times and save output of each run
 for (i in 1:100){
 cvfit=cv.glmnet(x,y, family="gaussian", type.measure="class")
 b<-as.matrix(coef(cvfit, s="lambda.min"))
 write.csv(b, paste('Everolimus', i, 'csv', sep = '.'))
 }
- 
+
+#Read in output files
 file1<-read.csv("Everolimus.1.csv")
 file2<-read.csv("Everolimus.2.csv")
 file3<-read.csv("Everolimus.3.csv")
@@ -114,6 +119,7 @@ file98<-read.csv("Everolimus.98.csv")
 file99<-read.csv("Everolimus.99.csv")
 file100<-read.csv("Everolimus.100.csv")
 
+#Merge results from all runs into a single file
 all<-merge(file1,file2, by="X")
 all<-merge(all,file3, by="X")
 all<-merge(all,file4, by="X")
@@ -213,4 +219,5 @@ all<-merge(all,file97, by="X")
 all<-merge(all,file98, by="X")
 all<-merge(all,file99, by="X")
 all<-merge(all,file100, by="X")
+#Write results as a single file
 write.csv(all, "Everolimus.overall.csv")
